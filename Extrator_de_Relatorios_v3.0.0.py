@@ -1,7 +1,6 @@
 from csv import Dialect
 from os import read, terminal_size
 from ttkbootstrap import Style
-from tkinter import ttk
 import pymysql.cursors
 import pandas as pd
 from tkinter import *
@@ -10,10 +9,10 @@ from datetime import date, timedelta
 from tkinter import messagebox
 import locale
 import threading
-import time
-
-
-
+from tkinter import ttk, messagebox
+from datetime import timedelta, date
+import xlsxwriter
+from tkcalendar import DateEntry  # Verificar a versão do pacote 'tkcalendar'
 
 # Define o idioma
 locale.setlocale(locale.LC_ALL, 'pt_BR.utf8')
@@ -44,7 +43,7 @@ def gerar_relatorio():
 
         # Pega as datas de inicio e fim do calendario e adiciona no select como uma Fstring
         dataInicial = calendario.get_date()
-        dataFinal = calendario2.get_date()
+        dataFinal = calendario.get_date()
 
         validacao = dataFinal - dataInicial
         if validacao >= timedelta(days=186):
@@ -213,7 +212,7 @@ def gerar_embarques():
     with con.cursor() as c2:
         #Datas do periodo
         dataInicial = calendario.get_date()
-        dataFinal = calendario2.get_date()
+        dataFinal = calendario.get_date()
         #Validação da Consulta-Catracas
         validacao = dataFinal - dataInicial
         if validacao >= timedelta(days = 31):
@@ -279,7 +278,7 @@ def gerar_estatistico():
     with con.cursor() as c3:
         # Datas do periodo
         dataInicial = calendario.get_date()
-        dataFinal = calendario2.get_date()
+        dataFinal = calendario.get_date()
         validacao = dataFinal - dataInicial
         if validacao >= timedelta(days = 31):
             messagebox.showinfo('Erro', 'O período máximo para consulta é de 1 mês')
@@ -322,7 +321,7 @@ def gerar_estatistico():
     with con.cursor() as c4:
         # Datas do Periodo
         dataInicial = calendario.get_date()
-        datFinal = calendario2.get_date()
+        datFinal = calendario.get_date()
         validacao = dataFinal - dataInicial
         if validacao >= timedelta(days = 31):
             messagebox.showinfo('Erro', 'O período máximo para consulta é de 1 mês')
@@ -369,7 +368,7 @@ def gerar_estatistico():
     with con2.cursor() as c5:
         # Datas do Periodo
         dataInicial = calendario.get_date()
-        datFinal = calendario2.get_date()
+        datFinal = calendario.get_date()
         validacao = dataFinal - dataInicial
         if validacao >= timedelta(days = 31):
             messagebox.showinfo('Erro', 'O período máximo para consulta é de 1 mês')
@@ -401,7 +400,7 @@ def gerar_estatistico():
     with con.cursor() as c6:
         # Datas do Periodo
         dataInicial = calendario.get_date()
-        datFinal = calendario2.get_date()
+        datFinal = calendario.get_date()
         validacao = dataFinal - dataInicial
         if validacao >= timedelta(days = 31):
             messagebox.showinfo('Erro', 'O período máximo para consulta é de 1 mês')
@@ -509,7 +508,7 @@ def gerar_estatistico():
 def entrega():
     with con.cursor() as c7:
         dataInicial = calendario.get_date()
-        dataFinal = calendario2.get_date()
+        dataFinal = calendario.get_date()
         validacao = dataFinal - dataInicial
         if validacao >= timedelta(days=186):
             messagebox.showinfo(
@@ -706,9 +705,6 @@ def selecao_radio():
 
 
 
-
-
-
 botao = ttk.Button(janela, text='Gerar Relatório',
                style='selectbg.Outline.TButton', 
                command=selecao_radio)
@@ -797,40 +793,35 @@ checkbox_fortaleza = ttk.Checkbutton(janela, text='Fortaleza', style='success.TC
 checkbox_fortaleza.place(relx= 0.67,rely= 0.7, anchor='w')
 
 
-
-
-
-
-
 # Desabilita o radiobutton
 #radio_estatistico.configure(state= DISABLED)
 
 
-texto_periodo = Label(janela, text='a')
-texto_periodo.configure(background='#A1CDEC', font=('calibri', 10, 'bold'))
-texto_periodo.place(relx=0.48, rely=0.16)
+# Criação da janela principal
+def calendario():
+    janela = Tk()
+    janela.title("Minha Janela")
+    janela.geometry("800x600")
 
+    texto_periodo = Label(janela, text='a')
+    texto_periodo.configure(background='#A1CDEC', font=('calibri', 10, 'bold'))
+    texto_periodo.place(relx=0.48, rely=0.16)
 
-data_minima = date(2021, 7, 1)
-calendario = DateEntry(janela, day=1, year=2022, setmode='day',
-                       date_pattern='dd/mm/yyyy',
-                       width=12,
-                       background='darkblue',
-                       locale='pt_BR.utf8')
-calendario.place(relx=0.19, rely=0.15)
+    data_minima = date(2021, 7, 1)
+    calendario = DateEntry(janela, day=1, year=2022, setmode='day',
+                           date_pattern='dd/mm/yyyy',
+                           width=12,
+                           background='darkblue',
+                           locale='pt_BR.utf8')
+    calendario.place(relx=0.19, rely=0.15)
 
-
-calendario2 = DateEntry(janela, year=2022,
-                        setmode='day',
-                        date_pattern='dd/mm/yyyy',
-                        background='darkblue',
-                        locale='pt_BR.utf8')
-calendario2.place(relx=0.53, rely=0.15)
-
-
-
-
-
+    calendario2 = DateEntry(janela, year=2022,
+                            setmode='day',
+                            date_pattern='dd/mm/yyyy',
+                            background='darkblue',
+                            locale='pt_BR.utf8')
+    calendario2.place(relx=0.53, rely=0.15)
+   
 
 
 # Validação de Úsuario
